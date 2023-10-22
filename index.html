@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="index.css" />
+    <h1 class="Rand" align="center"> How long would you like your break to be? </h1>
+  </head>
+  <body>
+    <div id="time" align = "center" style="display: none">
+        <p id="Timer"> </p>
+      </div>
+    <img src = "Transparent_Background_Photos/Butterfly20.png" width = "100" height="150" style = "transform: translateX(200px);">
+    <img src = "Transparent_Background_Photos/1382837148.png" width = "100" height="180" style = "transform: translateX(1100px);">
+
+    <form align="center" id="set">
+      
+      <input type="text" id="Hour" name="Hour" placeholder="Hours" autocomplete="off"/><br />
+      <div id="min">
+        <br />
+        
+        <input type="text" id="Minutes" name="Min" placeholder="Minutes" autocomplete="off"/>
+      </div>
+      <input type="submit" value="Submit" onclick="showDiv()"/>
+    </form>
+
+    <div id="count" align="center" style="display:none">
+      <p id="down"> </p>
+    </div>
+
+    <div id = "promptdiv" align = "center" style="display:none">
+      <p id = "prompt"></p>
+    </div>
+
+    <button type="button" id="promptbutton" align = "center" style="display:none" onclick="randPrompt()">
+      Generate!
+    </button>
+
+
+    <div id = "textBoxDiv" align = "center" style="display: none">
+      <textarea id = "textBox" name = "textBox" rows="4" cols="50" maxlength="1000" placeholder="Enter Journal Here">
+      </textarea>
+    </div>
+
+
+
+    <script>
+      function randPrompt(){
+            var promptList = ["Make a to-do list.", "Write About Something that Makes you Happy.", "How is this Project Going?", "How are you Doing?","How can you Make your Week Easier?", "Write About is your Favorite Memory.", "Write About your Favoritie Place."];
+            document.getElementById("prompt").innerHTML = promptList[parseInt(getRandomInt(7))]
+          }
+      
+      function getRandomInt(max){
+        return Math.floor(Math.random() * max);
+      }
+
+      document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the form from submitting
+        var hour = parseInt(document.getElementById("Hour").value);
+        var minute = parseInt(document.getElementById("Minutes").value);
+
+        function showDiv(){
+          document.getElementById("count").style.display = "";
+          document.getElementById("time").style.display = "";
+          document.getElementById("set").style.display = "none";
+          document.getElementById("promptdiv").style.display = "";
+          document.getElementById("promptbutton").style.display = "";
+          document.getElementById("textBoxDiv").style.display = "";
+        }
+
+        function getBreakTime(hour , minute) {
+          var today = new Date();
+          var newMinutes = today.getMinutes() + minute;
+          var newHours = today.getHours() + hour;
+          var pmAm = today.getHours() + hour;
+
+          // Handle cases where minutes exceed 60
+          if (newMinutes >= 60) {
+            newHours += Math.floor(newMinutes / 60);
+            newMinutes %= 60;
+          }
+
+          // Handle cases where hours exceed 12
+          if (newHours > 12) {
+            newHours %= 12;
+          }
+          else if (newHours == 0){
+            newHours = 12;
+          }
+          
+          var stringhour = newHours;
+          var stringMinute = newMinutes;
+        
+          if(pmAm >=12){
+            pmAm = "PM";
+          }
+          else{
+            pmAm = "AM";
+          }
+          if (stringhour < 10){
+            stringhour = "0" + stringhour;
+          }
+          if (stringMinute < 10){
+            stringMinute = "0" + stringMinute;
+          }
+
+          var timerText = `Expected end time: ${stringhour}:${stringMinute}${pmAm}`
+          
+          var promptList = ["Make a to-do list.", "Write About Something that Makes you Happy.", "How is this Project Going?", "How are you Doing?", "How can you Make your Week Easier?","Write About is your Favorite Memory.", "Write About your Favoritie Place."];
+
+          function getRandomInt(max){
+            return Math.floor(Math.random() * max);
+          }
+
+          document.getElementById("Timer").innerHTML = timerText;
+          document.getElementById("prompt").innerHTML = promptList[parseInt(getRandomInt(6))];
+
+          
+
+          // Calculate the countdown time here
+          var now = new Date();
+
+          var countdownTime = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            now.getHours() + hour,
+            now.getMinutes() + minute,
+            now.getSeconds()
+          ).getTime();
+
+          var x = setInterval(function () {
+            var now = new Date().getTime();
+
+            var distance = countdownTime - now;
+            var Seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            var Hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var Minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            
+            document.getElementById("down").innerHTML = `${Hours}h ${Minutes}m ${Seconds}s`;
+            
+            if (distance < 0) {
+              clearInterval(x);
+              document.getElementById("down").innerHTML = "Time has Ended";
+            }
+          }, 1000);
+        }
+
+        getBreakTime(hour, minute);
+        showDiv();
+      });
+    </script>
+  </body>
+</html>
